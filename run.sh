@@ -32,12 +32,19 @@ if [[ ! -z "$HOSTNAME" && ! -z "$DOMAINS" ]]; then
     postconf -e mydestination=$HOSTNAME,localhost
     echo -e "‣ Setting relay_domains: $DOMAINS"
     postconf -e relay_domains=$DOMAINS
-    postconf -e relayhost=
+    echo -e "‣ Setting relay host: $RELAYHOST"
+    postconf -e relayhost=$RELAYHOST
     postconf -e proxy_interfaces=$HOSTNAME
 fi
 
 # Increase the allowed header size, the default (102400) is quite smallish
 postconf -e header_size_limit=4096000
+
+# max message size: 40MB
+postconf -e message_size_limit=40960000
+
+# Allow both IPv4 and IPv6
+postconf -e inet_protocols=all
 
 # Restriction lists
 postconf -e smtpd_client_restrictions=
